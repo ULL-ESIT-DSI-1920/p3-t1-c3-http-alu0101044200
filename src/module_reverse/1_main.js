@@ -1,4 +1,4 @@
-const {reverse} = require("./node_modules/reverse");
+const {reverse} = require("reverse");
 
 // Index 2 holds the first actual command line argument
 let argument = process.argv[2];

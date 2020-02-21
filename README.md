@@ -39,4 +39,15 @@ var ds = argument.toString().split('').reverse().join('')
 console.log(ds);
 ~~~
 
-La imagen de ambos errores se puden ver en los siguientes enlace: ![Error Modulo]() ![Error funcion]()
+O tambien se puede solucionar cambiando el require("./reverse) por:
+
+~~~
+require("reverse")
+~~~
+
+La imagen de ambos errores se puden ver en los siguientes enlace: ![Error Modulo]("https://github.com/ULL-ESIT-DSI-1920/p3-t1-c3-http-alu0101044200/blob/work/Images/ErrorModulo.png")
+
+![Error funcion]("https://github.com/ULL-ESIT-DSI-1920/p3-t1-c3-http-alu0101044200/blob/work/Images/ErrorFuncion.png")
+
+## HTTP Module
+
