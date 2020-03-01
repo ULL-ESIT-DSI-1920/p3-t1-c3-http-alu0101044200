@@ -51,3 +51,251 @@ La imagen de ambos errores se puden ver en los siguientes enlace: ![Error Modulo
 
 ## HTTP Module
 
+### Modules
+
+    En esta seccion se utilizó el modelo reverse para crear una funcion que es luego llamado desde el main para revertir una frase pasada por terminal.
+
+    La funcion reverse es de la siguiente forma:
+
+    ```
+    exports.reverse = function(string) {
+        return Array.from(string).reverse().join("");
+    };
+    ```
+
+    Mientras que el main se ve así:
+
+    ```
+    const {reverse} = require("reverse");
+
+    // Index 2 holds the first actual command line argument
+    let argument = process.argv[2];
+    var ds = argument.toString().split('').reverse().join('')
+    console.log(ds);
+    ```
+
+    La salida deeste programa se realiza de la siguiente forma:
+
+![Imagen_Reverse](https://github.com/ULL-ESIT-DSI-1920/p3-t1-c3-http-alu0101044200/blob/work/Images/Reverse.png)
+
+
+### Package Files
+
+Instalar modelos nuevos con npm y serán añadidas al package.json.
+
+Crear package.json y node_modules:
+
+```
+npm init
+```
+
+Para instalar un paquete nuevo:
+
+```
+npm install __nombre_packete__
+```
+
+### Versions
+
+En el package.json se especifica la version del programa. Dicha version se especifica con tres numeros separados por puntos (X,Y,Z).
+
+Cada vez que se añade una nueva funcionalidad se cambia el numero Y. Mientras que si pierde la compatibilidad se debe cambiar la X.
+
+### The File System Module
+
+Este modulo se ha profundizado en la práctica anterior, se puede encontrar en ![File system github]("https://github.com/ULL-ESIT-DSI-1920/p2-t1-c3-filesystem-alu0101044200")
+
+### The HTTP Module
+
+El modelo HTTP sirve para crear servidores HTTP y poder realizar peticiones HTTP del cliente.
+
+El ejemplo de servidor que vemos en el libro es:
+
+```
+const {createServer} = require("http");
+let server = createServer((request, response) => {
+  response.writeHead(200, {"Content-Type": "text/html"});
+  response.write(`
+    <h1>Hello!</h1>
+    <p>You asked for <code>${request.url}</code></p>`);
+  response.end();
+});
+server.listen(8000);
+console.log("Listening! (port 8000)");
+```
+
+Mientras que el cliente HTTP para realizar las peticiones se realiza de la siguiente forma:
+
+```
+const {request} = require("http");
+let requestStream = request({
+  hostname: "eloquentjavascript.net",
+  path: "/20_node.html",
+  method: "GET",
+  headers: {Accept: "text/html"}
+}, response => {
+  console.log("Server responded with status code",
+              response.statusCode);
+});
+requestStream.end();
+```
+
+La salida del siguiente programa es:
+
+![htto module](https://github.com/ULL-ESIT-DSI-1920/p3-t1-c3-http-alu0101044200/blob/work/Images/httpmodule.png)
+
+
+### Streams
+
+En este apartado se veran nuevos streams, para poder escribirlas, por ejemplo con el **create WriteStream** del module **fs**.
+
+Por otro lado se tienen las transmiciones legibles que tienen eventos de "data" y "end"
+
+Este código crea un servidor que lee las solicitudes y los vuelve a transmitir al cliente como texto en mayúsculas:
+
+```
+const {createServer} = require("http");
+createServer((request, response) => {
+  response.writeHead(200, {"Content-Type": "text/plain"});
+  request.on("data", chunk =>
+    response.write(chunk.toString().toUpperCase()));
+  request.on("end", () => response.end());
+}).listen(8000);
+```
+
+El siguiente fragmento de código, cuando se ejecuta con el servidor de mayúsculas activo, enviará una solicitud a ese servidor y escribirá la respuesta que obtenga:
+
+```
+const {request} = require("http");
+request({
+  hostname: "localhost",
+  port: 8000,
+  method: "POST"
+}, response => {
+  response.on("data", chunk =>
+    process.stdout.write(chunk.toString()));
+}).end("Hello server");
+
+```
+
+La salida del siguiente programa es:
+
+![streams](https://github.com/ULL-ESIT-DSI-1920/p3-t1-c3-http-alu0101044200/blob/work/Images/streams.png)
+
+
+### A File Server
+
+En este apartado la intencion es crear un servidor HTTP que permite el acceso remoto a un sistema de archivos.
+
+HTTP nos permite realizar peticiones como el GET, PUT y DELETE, que se usan para leer, escribir y eliminar archivos.
+
+El código para poder realizar las siguientes peticiones es:
+
+```
+const {createServer} = require("http");
+
+const methods = Object.create(null);
+
+createServer((request, response) => {
+  let handler = methods[request.method] || notAllowed;
+  handler(request)
+    .catch(error => {
+      if (error.status != null) return error;
+      return {body: String(error), status: 500};
+    })
+    .then(({body, status = 200, type = "text/plain"}) => {
+       response.writeHead(status, {"Content-Type": type});
+       if (body && body.pipe) body.pipe(response);
+       else response.end(body);
+    });
+}).listen(8000);
+
+async function notAllowed(request) {
+  return {
+    status: 405,
+    body: `Method ${request.method} not allowed.`
+  };
+}
+
+
+const {parse} = require("url");
+const {resolve, sep} = require("path");
+
+const baseDirectory = process.cwd();
+
+function urlPath(url) {
+  let {pathname} = parse(url);
+  let path = resolve(decodeURIComponent(pathname).slice(1));
+  if (path != baseDirectory &&
+      !path.startsWith(baseDirectory + sep)) {
+    throw {status: 403, body: "Forbidden"};
+  }
+  return path;
+}
+
+
+const {createReadStream} = require("fs");
+const {stat, readdir} = require("fs").promises;
+const mime = require("mime");
+
+methods.GET = async function(request) {
+  let path = urlPath(request.url);
+  let stats;
+  try {
+    stats = await stat(path);
+  } catch (error) {
+    if (error.code != "ENOENT") throw error;
+    else return {status: 404, body: "File not found"};
+  }
+  if (stats.isDirectory()) {
+    return {body: (await readdir(path)).join("\n")};
+  } else {
+    return {body: createReadStream(path),
+            type: mime.getType(path)};
+  }
+};
+
+const {rmdir, unlink} = require("fs").promises;
+
+methods.DELETE = async function(request) {
+  let path = urlPath(request.url);
+  let stats;
+  try {
+    stats = await stat(path);
+  } catch (error) {
+    if (error.code != "ENOENT") throw error;
+    else return {status: 204};
+  }
+  if (stats.isDirectory()) await rmdir(path);
+  else await unlink(path);
+  return {status: 204};
+};
+
+
+const {createWriteStream} = require("fs");
+
+function pipeStream(from, to) {
+  return new Promise((resolve, reject) => {
+    from.on("error", reject);
+    to.on("error", reject);
+    to.on("finish", resolve);
+    from.pipe(to);
+  });
+}
+
+methods.PUT = async function(request) {
+  let path = urlPath(request.url);
+  await pipeStream(request, createWriteStream(path));
+  return {status: 204};
+};
+```
+
+La salida e utilización del siguiente programa se hace como:
+
+![AfileServer](https://github.com/ULL-ESIT-DSI-1920/p3-t1-c3-http-alu0101044200/blob/work/Images/afile.png)
+
+
+## Ejercicios
+
+### Search Tool
+
