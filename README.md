@@ -297,5 +297,29 @@ La salida e utilización del siguiente programa se hace como:
 
 ## Ejercicios
 
-### Search Tool
+### Creating Directories
+
+* Though the DELETE method is wired up to delete directories (using fs.rmdir), the file server currently does not provide any way to create a directory. Add support for a method MKCOL, which should create a directory by calling fs.mkdir.
+  
+```
+methods.MKCOL = function(path, respond, request) { 
+  fs.stat(path, function(error,stats){
+    
+    if(!stats)
+      fs.mkdir(path, respondErrorOrNothing(respond));
+    if(error && error.code == "ENOENT")
+      respond(204);
+    else if (error)
+      respond(500, error.toString());
+    else if(stats.isDirectory())
+      respond(204);
+    else 
+      respond(400);
+    
+  })
+
+};
+```
+
+
 
