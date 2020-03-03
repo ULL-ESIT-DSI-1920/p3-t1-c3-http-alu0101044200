@@ -1,7 +1,10 @@
 const {createServer} = require("http");
 
 const methods = Object.create(null);
-
+/**
+ * This fuction creates a server which listens at port 8000.
+ * @param {request, response} 
+ */
 createServer((request, response) => {
   let handler = methods[request.method] || notAllowed;
   handler(request)
@@ -43,7 +46,11 @@ function urlPath(url) {
 const {createReadStream} = require("fs");
 const {stat, readdir} = require("fs").promises;
 const mime = require("mime");
-
+/**
+ * This method returns the content file or directory if it exists.
+ * @param {path, respond} 
+ * @returns shows content.
+ */
 methods.GET = async function(request) {
   let path = urlPath(request.url);
   let stats;
@@ -63,6 +70,11 @@ methods.GET = async function(request) {
 
 const {rmdir, unlink} = require("fs").promises;
 
+/**
+ * This method delets a directory if it exists.
+ * @param {path, respond} 
+ * @returns {rmdir} removed path directory.
+ */
 methods.DELETE = async function(request) {
   let path = urlPath(request.url);
   let stats;
@@ -89,6 +101,11 @@ function pipeStream(from, to) {
   });
 }
 
+/**
+ * This method adds a directory or file what path indicates.
+ * @param {path, respond, request} 
+ * @returns {request} can add content to fille with pipe() or simply creates file.
+ */
 methods.PUT = async function(request) {
   let path = urlPath(request.url);
   await pipeStream(request, createWriteStream(path));
