@@ -85,11 +85,13 @@ Instalar modelos nuevos con npm y serán añadidas al package.json.
 
 Crear package.json y node_modules:
 
+
 ```
 npm init
 ```
 
 Para instalar un paquete nuevo:
+
 
 ```
 npm install __nombre_packete__
@@ -111,6 +113,7 @@ El modelo HTTP sirve para crear servidores HTTP y poder realizar peticiones HTTP
 
 El ejemplo de servidor que vemos en el libro es:
 
+
 ```
 const {createServer} = require("http");
 let server = createServer((request, response) => {
@@ -122,9 +125,11 @@ let server = createServer((request, response) => {
 });
 server.listen(8000);
 console.log("Listening! (port 8000)");
+
 ```
 
 Mientras que el cliente HTTP para realizar las peticiones se realiza de la siguiente forma:
+
 
 ```
 const {request} = require("http");
@@ -138,6 +143,7 @@ let requestStream = request({
               response.statusCode);
 });
 requestStream.end();
+
 ```
 
 La salida del siguiente programa es:
@@ -161,6 +167,7 @@ createServer((request, response) => {
     response.write(chunk.toString().toUpperCase()));
   request.on("end", () => response.end());
 }).listen(8000);
+
 ```
 
 El siguiente fragmento de código, cuando se ejecuta con el servidor de mayúsculas activo, enviará una solicitud a ese servidor y escribirá la respuesta que obtenga:
