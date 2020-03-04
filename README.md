@@ -328,6 +328,7 @@ methods.MKCOL = function(path, respond, request) {
 };
 ```
 
+![mkcol](https://github.com/ULL-ESIT-DSI-1920/p3-t1-c3-http-alu0101044200/blob/work/Images/mkcol.png)
 
 
 ## GULP FILE
