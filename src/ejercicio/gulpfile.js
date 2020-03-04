@@ -14,5 +14,6 @@ gulp.task("lint", shell.task("jshint *.js **/*.js"));
 gulp.task("get", shell.task("curl -v http://localhost:8000/file.txt"));
 gulp.task("put", shell.task("curl -v -X PUT -d 'Bye world!' http://localhost:8000/file.txt"));
 gulp.task("delete", shell.task("curl -v -X DELETE http://localhost:8000/DIRECTORY"));
+gulp.task("mkcol", shell.task("curl -X MKCOL http://localhost:8000/DIRECTORY"))
 
 gulp.task("doc", shell.task("documentation build mkdir.js -f md -o doc"));
