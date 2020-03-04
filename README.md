@@ -57,7 +57,7 @@ La imagen de ambos errores se puden ver en los siguientes enlace: ![Error Modulo
 
     La funcion reverse es de la siguiente forma:
 
-    ```javascript
+    ``` javascript
     exports.reverse = function(string) {
         return Array.from(string).reverse().join("");
     };
