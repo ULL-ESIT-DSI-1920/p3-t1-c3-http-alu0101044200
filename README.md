@@ -86,7 +86,7 @@ Instalar modelos nuevos con npm y serán añadidas al package.json.
 Crear package.json y node_modules:
 
 
-```
+``` bash
 npm init
 ```
 
