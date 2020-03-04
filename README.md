@@ -86,7 +86,7 @@ Instalar modelos nuevos con npm y serán añadidas al package.json.
 Crear package.json y node_modules:
 
 
-``` bash
+```
 npm init
 ```
 
@@ -114,7 +114,7 @@ El modelo HTTP sirve para crear servidores HTTP y poder realizar peticiones HTTP
 El ejemplo de servidor que vemos en el libro es:
 
 
-```
+```js
 const {createServer} = require("http");
 let server = createServer((request, response) => {
   response.writeHead(200, {"Content-Type": "text/html"});
@@ -131,7 +131,7 @@ console.log("Listening! (port 8000)");
 Mientras que el cliente HTTP para realizar las peticiones se realiza de la siguiente forma:
 
 
-```
+```js
 const {request} = require("http");
 let requestStream = request({
   hostname: "eloquentjavascript.net",
@@ -159,7 +159,7 @@ Por otro lado se tienen las transmiciones legibles que tienen eventos de "data" 
 
 Este código crea un servidor que lee las solicitudes y los vuelve a transmitir al cliente como texto en mayúsculas:
 
-```
+```js
 const {createServer} = require("http");
 createServer((request, response) => {
   response.writeHead(200, {"Content-Type": "text/plain"});
@@ -172,7 +172,7 @@ createServer((request, response) => {
 
 El siguiente fragmento de código, cuando se ejecuta con el servidor de mayúsculas activo, enviará una solicitud a ese servidor y escribirá la respuesta que obtenga:
 
-```
+```js
 const {request} = require("http");
 request({
   hostname: "localhost",
@@ -198,7 +198,7 @@ HTTP nos permite realizar peticiones como el GET, PUT y DELETE, que se usan para
 
 El código para poder realizar las siguientes peticiones es:
 
-```
+```js
 const {createServer} = require("http");
 
 const methods = Object.create(null);
@@ -308,7 +308,7 @@ La salida e utilización del siguiente programa se hace como:
 
 * Though the DELETE method is wired up to delete directories (using fs.rmdir), the file server currently does not provide any way to create a directory. Add support for a method MKCOL, which should create a directory by calling fs.mkdir.
   
-```
+```js
 methods.MKCOL = function(path, respond, request) { 
   fs.stat(path, function(error,stats){
     
@@ -342,7 +342,7 @@ npm install gulp-shell
 
 Crear fichero gulpfile.js, su contenido es:
 
-```
+```js
 var gulp = require("gulp");
 var shell = require("gulp-shell");
 
