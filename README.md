@@ -57,7 +57,7 @@ La imagen de ambos errores se puden ver en los siguientes enlace: ![Error Modulo
 
     La funcion reverse es de la siguiente forma:
 
-    ```
+    ``` javascript
     exports.reverse = function(string) {
         return Array.from(string).reverse().join("");
     };
@@ -86,7 +86,7 @@ Instalar modelos nuevos con npm y serán añadidas al package.json.
 Crear package.json y node_modules:
 
 
-```
+``` bash
 npm init
 ```
 
